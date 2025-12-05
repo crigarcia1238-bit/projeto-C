@@ -1,34 +1,40 @@
+#pragma once
 
+#define MAX_STR 200
+#define MAX_ACTORES 20
+#define MAX_GENEROS 5
+#define MAX_FILMES 2000
 
 typedef enum {
-    ACTION, ADVENTURE, ANIMATION, BIOGRAPHY, COMEDY, CRIME, DRAMA, FAMILY,
-    FANTASY, HISTORY, HORROR, MUSIC, MUSICAL, MYSTERY, ROMANCE, SCI_FI,
-    SPORT, THRILLER, WAR, WESTERN, GENRE_COUNT
-} Genero;
+    ACTION, ADVENTURE, ANIMATION, BIOGRAPHY, COMEDY,
+    CRIME, DRAMA, FAMILY, FANTASY, HISTORY, HORROR,
+    MUSIC, MUSICAL, MYSTERY, ROMANCE, SCI_FI,
+    SPORT, THRILLER, WAR, WESTERN
+} genero;
 
 typedef struct {
     int code;
-    char title[100];
-    Genero genres[5];
-    int genre_count;
-    char description[500];
-    char director[50];
-    char actors[200];
+    char title[MAX_STR];
+    genero genres[MAX_GENEROS];
+    int numGenres;
+    char description[MAX_STR];
+    char director[MAX_STR];
+    char actors[MAX_ACTORES][MAX_STR];
+    int numActors;
     int year;
-    int duration; 
-    float rating; 
+    int duration;
+    float rating;
     int favorite;
-    float revenue; 
+    float revenue;
 } Filme;
 
 
-void listar_filmes(Filme filmes[], int n, int criterio);
-void pesquisar_por_titulo(Filme filmes[], int n, const char* str);
-void pesquisar_por_genero(Filme filmes[], int n, Genero g);
-void pesquisar_por_diretor(Filme filmes[], int n, const char* diretor);
-void pesquisar_por_ator(Filme filmes[], int n, const char* ator);
-void consultar_filme(Filme filmes[], int n, int codigo);
-int adicionar_filme(Filme filmes[], int* n, int* prox_codigo);
-
-const char* get_genre_name(Genero g);
-
+void adicionarFilme(Filme filmes[], int *totalFilmes);
+void pesquisarPorCodigo(Filme filmes[], int totalFilmes);
+void pesquisarPorRating(Filme filmes[], int totalFilmes);
+void pesquisarPorTituloAlfabetico(Filme filmes[], int totalFilmes);
+void pesquisarPorTitulo(Filme filmes[], int totalFilmes);
+void pesquisarPorGenero(Filme filmes[], int totalFilmes);
+void pesquisarPorRealizador(Filme filmes[], int totalFilmes);
+void pesquisarPorAtor(Filme filmes[], int totalFilmes);
+void consultarFilme(Filme filmes[], int totalFilmes, int code);
