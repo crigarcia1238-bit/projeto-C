@@ -30,11 +30,14 @@ typedef struct {
 
 // Funções
 void adicionarFilme(Filme filmes[], int *totalFilmes);
+
 void pesquisarPorCodigo(Filme filmes[], int totalFilmes);
 void pesquisarPorRating(Filme filmes[], int totalFilmes);
 void pesquisarPorTituloAlfabetico(Filme filmes[], int totalFilmes);
+
 void pesquisarPorTitulo(Filme filmes[], int totalFilmes);
 void pesquisarPorGenero(Filme filmes[], int totalFilmes);
 void pesquisarPorRealizador(Filme filmes[], int totalFilmes);
 void pesquisarPorAtor(Filme filmes[], int totalFilmes);
+
 void consultarFilme(Filme filmes[], int totalFilmes, int code);
