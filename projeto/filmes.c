@@ -91,9 +91,22 @@ void adicionarFilme(Filme filmes[], int *totalFilmes) {
         f.actors[i][strcspn(f.actors[i], "\n")] = 0;
     }
 
-    // Ano
-    printf("Ano: ");
-    scanf("%d", &f.year); limparBuffer();
+    // Ano (>0) e apenas numeros 
+    int anoOK = 0;
+    do {
+            printf("Ano: "); 
+        if (scanf("%d", &f.year) != 1) {
+            printf("Erro: insira apenas numeros!\n");
+        while (getchar() != '\n'); // limpa buffer
+        } else if (f.year <= 0) {
+            printf("Erro: o ano tem de ser maior que 0!\n");
+        } else {
+            anoOK = 1;
+            getchar(); // consome '\n' restante
+        }
+    } while (!anoOK);
+
+
 
     // Duração (>0)
     do {
@@ -113,9 +126,20 @@ void adicionarFilme(Filme filmes[], int *totalFilmes) {
         }
     } while (f.rating < 0.0 || f.rating > 10.0);
 
-    // Favoritos
-    printf("Favoritos: ");
-    scanf("%d", &f.favorite); limparBuffer();
+    
+   // Favoritos (apenas número)
+    int favOK = 0;
+    do {
+        printf("Favoritos (apenas numero): ");
+        if (scanf("%d", &f.favorite) != 1) {
+            printf("Erro: insira apenas numeros!\n");
+            while (getchar() != '\n'); // limpa buffer
+        } else {
+            favOK = 1;
+            getchar(); // consome '\n'
+        }
+    } while (!favOK);
+
 
     // Receita
     printf("Receita (milhoes): ");
