@@ -28,7 +28,7 @@ typedef struct {
     float revenue;
 } Filme;
 
-
+// Funções
 void adicionarFilme(Filme filmes[], int *totalFilmes);
 void pesquisarPorCodigo(Filme filmes[], int totalFilmes);
 void pesquisarPorRating(Filme filmes[], int totalFilmes);

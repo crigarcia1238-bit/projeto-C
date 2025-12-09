@@ -3,30 +3,58 @@
 #include <ctype.h>
 #include "filmes.h"
 
-// ======================================================
-// ADICIONAR FILME
-// ======================================================
+// Array com nomes dos géneros
+const char *generoNomes[20] = {
+    "ACTION", "ADVENTURE", "ANIMATION", "BIOGRAPHY", "COMEDY",
+    "CRIME", "DRAMA", "FAMILY", "FANTASY", "HISTORY",
+    "HORROR", "MUSIC", "MUSICAL", "MYSTERY", "ROMANCE",
+    "SCI-FI", "SPORT", "THRILLER", "WAR", "WESTERN"
+};
+
+// Limpar buffer de entrada
+void limparBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+// --------------------- adicionar um filme
+
 void adicionarFilme(Filme filmes[], int *totalFilmes) {
+    if (*totalFilmes >= MAX_FILMES) {
+        printf("Limite de filmes atingido!\n");
+        return;
+    }
+
     Filme f;
     f.code = *totalFilmes + 1;
 
     printf("\n=== Adicionar Filme ===\n");
 
-    printf("Título: ");
+    printf("Titulo: ");
     fgets(f.title, MAX_STR, stdin);
     f.title[strcspn(f.title, "\n")] = 0;
 
-    printf("Número de géneros: ");
-    scanf("%d", &f.numGenres); getchar();
+    printf("Numero de generos (max %d): ", MAX_GENEROS);
+    scanf("%d", &f.numGenres); limparBuffer();
+    if (f.numGenres > MAX_GENEROS) f.numGenres = MAX_GENEROS;
 
     for (int i = 0; i < f.numGenres; i++) {
         int g;
-        printf("Digite o número do género (0-19): ");
-        scanf("%d", &g); getchar();
+        do {
+            printf("Digite o numero do genero (0-19): ");
+            scanf("%d", &g); limparBuffer();
+
+            if (g < 0 || g > 19) {
+                printf("Genero invalido! Tente novamente.\n");
+            } else {
+                printf("Genero selecionado: %s\n", generoNomes[g]);
+            }
+        } while (g < 0 || g > 19);
+
         f.genres[i] = (genero)g;
     }
 
-    printf("Descrição: ");
+    printf("Descricao: ");
     fgets(f.description, MAX_STR, stdin);
     f.description[strcspn(f.description, "\n")] = 0;
 
@@ -34,8 +62,9 @@ void adicionarFilme(Filme filmes[], int *totalFilmes) {
     fgets(f.director, MAX_STR, stdin);
     f.director[strcspn(f.director, "\n")] = 0;
 
-    printf("Número de atores: ");
-    scanf("%d", &f.numActors); getchar();
+    printf("Numero de atores (max %d): ", MAX_ACTORES);
+    scanf("%d", &f.numActors); limparBuffer();
+    if (f.numActors > MAX_ACTORES) f.numActors = MAX_ACTORES;
 
     for (int i = 0; i < f.numActors; i++) {
         printf("Ator %d: ", i + 1);
@@ -44,32 +73,48 @@ void adicionarFilme(Filme filmes[], int *totalFilmes) {
     }
 
     printf("Ano: ");
-    scanf("%d", &f.year);
+    scanf("%d", &f.year); limparBuffer();
 
-    printf("Duração: ");
-    scanf("%d", &f.duration);
+   
+    do {
+        printf("Duracao (minutos > 0): ");
+        scanf("%d", &f.duration);
+        limparBuffer();
 
-    printf("Rating (0-10): ");
-    scanf("%f", &f.rating);
+        if (f.duration <= 0) {
+            printf("Erro: a duracao tem de ser maior que 0.\n");
+        }
+    } while (f.duration <= 0);
+
+   
+    do {
+        printf("Rating (0-10): ");
+        scanf("%f", &f.rating);
+        limparBuffer();
+
+        if (f.rating < 0.0 || f.rating > 10.0) {
+            printf("Erro: o rating tem de estar entre 0 e 10.\n");
+        }
+    } while (f.rating < 0.0 || f.rating > 10.0);
 
     printf("Favoritos: ");
-    scanf("%d", &f.favorite);
+    scanf("%d", &f.favorite); limparBuffer();
 
-    printf("Receita (milhões): ");
-    scanf("%f", &f.revenue);
-    getchar();
+    printf("Receita (milhoes): ");
+    scanf("%f", &f.revenue); limparBuffer();
 
     filmes[*totalFilmes] = f;
     (*totalFilmes)++;
 
-    printf("Filme adicionado com sucesso! Código: %d\n", f.code);
+    printf("Filme adicionado com sucesso! Codigo: %d\n", f.code);
 }
 
-// ======================================================
-// PESQUISAS POR ORDEM / CRITÉRIO
-// ======================================================
+
+
+//--------------------- listagem de todos os filmes
+
 void pesquisarPorCodigo(Filme filmes[], int totalFilmes) {
-    printf("\n=== PESQUISAR POR CÓDIGO ===\n");
+    printf("\n=== Listagem por codigo ===\n");
     for (int i = 0; i < totalFilmes; i++) {
         Filme f = filmes[i];
         printf("%d | %s | Rating %.1f | Ano %d\n",
@@ -78,48 +123,53 @@ void pesquisarPorCodigo(Filme filmes[], int totalFilmes) {
 }
 
 void pesquisarPorRating(Filme filmes[], int totalFilmes) {
-    // ordenação decrescente
+    Filme temp[MAX_FILMES];
+    memcpy(temp, filmes, sizeof(Filme) * totalFilmes);
+
     for (int i = 0; i < totalFilmes - 1; i++)
         for (int j = i + 1; j < totalFilmes; j++)
-            if (filmes[j].rating > filmes[i].rating) {
-                Filme t = filmes[i];
-                filmes[i] = filmes[j];
-                filmes[j] = t;
+            if (temp[j].rating > temp[i].rating) {
+                Filme t = temp[i];
+                temp[i] = temp[j];
+                temp[j] = t;
             }
 
-    printf("\n=== PESQUISAR POR RATING ===\n");
+    printf("\n=== listar por rating ===\n");
     for (int i = 0; i < totalFilmes; i++) {
-        Filme f = filmes[i];
+        Filme f = temp[i];
         printf("%d | %s | %.1f\n", f.code, f.title, f.rating);
     }
 }
 
 void pesquisarPorTituloAlfabetico(Filme filmes[], int totalFilmes) {
+    Filme temp[MAX_FILMES];
+    memcpy(temp, filmes, sizeof(Filme) * totalFilmes);
+
     for (int i = 0; i < totalFilmes - 1; i++)
         for (int j = i + 1; j < totalFilmes; j++)
-            if (strcmp(filmes[j].title, filmes[i].title) < 0) {
-                Filme t = filmes[i];
-                filmes[i] = filmes[j];
-                filmes[j] = t;
+            if (strcmp(temp[j].title, temp[i].title) < 0) {
+                Filme t = temp[i];
+                temp[i] = temp[j];
+                temp[j] = t;
             }
 
-    printf("\n=== PESQUISAR POR TÍTULO (A-Z) ===\n");
+    printf("\n=== listar por titulo (A-Z) ===\n");
     for (int i = 0; i < totalFilmes; i++) {
-        Filme f = filmes[i];
+        Filme f = temp[i];
         printf("%d | %s\n", f.code, f.title);
     }
 }
 
-// ======================================================
-// PESQUISAS POR STRING / CRITÉRIO
-// ======================================================
+
+// --------------------- pesquisa geral
+
 void pesquisarPorTitulo(Filme filmes[], int totalFilmes) {
     char termo[MAX_STR];
-    printf("Parte do título: ");
+    printf("Parte do titulo: ");
     fgets(termo, MAX_STR, stdin);
     termo[strcspn(termo, "\n")] = 0;
 
-    printf("\n=== RESULTADOS ===\n");
+    printf("\n=== resultados ===\n");
     for (int i = 0; i < totalFilmes; i++) {
         if (strstr(filmes[i].title, termo) != NULL) {
             Filme f = filmes[i];
@@ -130,18 +180,20 @@ void pesquisarPorTitulo(Filme filmes[], int totalFilmes) {
 
 void pesquisarPorGenero(Filme filmes[], int totalFilmes) {
     int g;
-    printf("Digite o número do género (0-19): ");
-    scanf("%d", &g); getchar();
+    printf("Digite o numero do género (0-19): ");
+    scanf("%d", &g); limparBuffer();
 
-    printf("\n=== RESULTADOS ===\n");
-    for (int i = 0; i < totalFilmes; i++) {
-        for (int j = 0; j < filmes[i].numGenres; j++) {
-            if (filmes[i].genres[j] == g) {
-                Filme f = filmes[i];
-                printf("%d | %s | %.1f\n", f.code, f.title, f.rating);
-            }
-        }
+    if (g < 0 || g > 19) {
+        printf("Genero invalido!\n");
+        return;
     }
+
+    printf("Genero selecionado: %s\n", generoNomes[g]);
+    printf("\n=== resultados ===\n");
+    for (int i = 0; i < totalFilmes; i++)
+        for (int j = 0; j < filmes[i].numGenres; j++)
+            if (filmes[i].genres[j] == g)
+                printf("%d | %s | %.1f\n", filmes[i].code, filmes[i].title, filmes[i].rating);
 }
 
 void pesquisarPorRealizador(Filme filmes[], int totalFilmes) {
@@ -150,13 +202,10 @@ void pesquisarPorRealizador(Filme filmes[], int totalFilmes) {
     fgets(dir, MAX_STR, stdin);
     dir[strcspn(dir, "\n")] = 0;
 
-    printf("\n=== RESULTADOS ===\n");
-    for (int i = 0; i < totalFilmes; i++) {
-        if (strcasecmp(filmes[i].director, dir) == 0) {
-            Filme f = filmes[i];
-            printf("%d | %s | %s\n", f.code, f.title, f.director);
-        }
-    }
+    printf("\n=== resultados ===\n");
+    for (int i = 0; i < totalFilmes; i++)
+        if (strcasecmp(filmes[i].director, dir) == 0)
+            printf("%d | %s | %s\n", filmes[i].code, filmes[i].title, filmes[i].director);
 }
 
 void pesquisarPorAtor(Filme filmes[], int totalFilmes) {
@@ -165,34 +214,31 @@ void pesquisarPorAtor(Filme filmes[], int totalFilmes) {
     fgets(nome, MAX_STR, stdin);
     nome[strcspn(nome, "\n")] = 0;
 
-    printf("\n=== RESULTADOS ===\n");
-    for (int i = 0; i < totalFilmes; i++) {
-        for (int j = 0; j < filmes[i].numActors; j++) {
-            if (strcasecmp(filmes[i].actors[j], nome) == 0) {
-                Filme f = filmes[i];
-                printf("%d | %s | %s\n", f.code, f.title, filmes[i].actors[j]);
-            }
-        }
-    }
+    printf("\n=== resultados ===\n");
+    for (int i = 0; i < totalFilmes; i++)
+        for (int j = 0; j < filmes[i].numActors; j++)
+            if (strcasecmp(filmes[i].actors[j], nome) == 0)
+                printf("%d | %s | %s\n", filmes[i].code, filmes[i].title, filmes[i].actors[j]);
 }
 
-// ======================================================
-// CONSULTAR DETALHES
-// ======================================================
+
+// --------------------- consultar pelo code
+
 void consultarFilme(Filme filmes[], int totalFilmes, int code) {
-    for (int i = 0; i < totalFilmes; i++) {
+    for (int i = 0; i < totalFilmes; i++)
         if (filmes[i].code == code) {
             Filme f = filmes[i];
-            printf("\n=== DETALHES DO FILME ===\n");
-            printf("Código: %d\n", f.code);
-            printf("Título: %s\n", f.title);
 
-            printf("Géneros: ");
+            printf("\n=== detalhes do filme ===\n");
+            printf("Codigo: %d\n", f.code);
+            printf("Titulo: %s\n", f.title);
+
+            printf("Generos: ");
             for (int j = 0; j < f.numGenres; j++)
-                printf("%d ", f.genres[j]);
+                printf("%s ", generoNomes[f.genres[j]]);
             printf("\n");
 
-            printf("Descrição: %s\n", f.description);
+            printf("Descricao: %s\n", f.description);
             printf("Realizador: %s\n", f.director);
 
             printf("Atores: ");
@@ -204,9 +250,8 @@ void consultarFilme(Filme filmes[], int totalFilmes, int code) {
             printf("Duração: %d\n", f.duration);
             printf("Rating: %.1f\n", f.rating);
             printf("Favoritos: %d\n", f.favorite);
-            printf("Receita: %.1f milhões\n", f.revenue);
+            printf("Receita: %.1f milhoes\n", f.revenue);
             return;
         }
-    }
-    printf("Filme não encontrado!\n");
+    printf("Filme nao encontrado!\n");
 }
