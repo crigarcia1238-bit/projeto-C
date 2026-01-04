@@ -41,3 +41,11 @@ void pesquisarPorRealizador(Filme filmes[], int totalFilmes);
 void pesquisarPorAtor(Filme filmes[], int totalFilmes);
 
 void consultarFilme(Filme filmes[], int totalFilmes, int code);
+
+void alterarFIlme(Filme filmes[], int totalFilmes); 
+void eliminarFilme(Filme filmes[], int *totalFilmes, int code);
+void eliminarTodosFilmes(Filme filmes[], int *totalFilmes);
+int filmeExiste(Filme filmes[], int total, int code);
+
+int importarFilmesCSV(Filme filmes[], int *totalFilmes);
+int exportarFilmesCSV(Filme filmes[], int *totalFilmes);
