@@ -78,7 +78,7 @@ int main() {
             importarFilmesCSV(filmes, &totalFilmes);
             break;
         case 9:
-            exportarFilmesCSV(filmes, &totalFilmes);
+            exportarFilmesCVS(filmes, &totalFilmes); 
             break;
         case 0:
             printf("A sair...\n");

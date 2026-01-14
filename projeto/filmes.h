@@ -4,7 +4,7 @@
 #define MAX_ACTORES 20
 #define MAX_GENEROS 5
 #define MAX_FILMES 2000
-
+// tipos compostos
 typedef enum {
     ACTION, ADVENTURE, ANIMATION, BIOGRAPHY, COMEDY,
     CRIME, DRAMA, FAMILY, FANTASY, HISTORY, HORROR,

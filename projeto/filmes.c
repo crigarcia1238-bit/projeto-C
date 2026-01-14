@@ -4,7 +4,7 @@
 #include <locale.h>
 #include <stdlib.h>
 #include "filmes.h"
-
+// -----------------------------Parte do Chris----------------------------------------------
 // Array com nomes dos géneros
 const char *generoNomes[20] = {
     "ACTION", "ADVENTURE", "ANIMATION", "BIOGRAPHY", "COMEDY",
@@ -38,16 +38,15 @@ void adicionarFilme(Filme filmes[], int *totalFilmes) {
     f.title[strcspn(f.title, "\n")] = 0;
 
     // Número de géneros
-   do {
-    printf("Numero de generos (1 a %d): ", MAX_GENEROS);
-    scanf("%d", &f.numGenres);
-    limparBuffer();
-
-    if (f.numGenres < 1 || f.numGenres > MAX_GENEROS) {
-        printf("Erro: o numero de generos deve estar entre 1 e %d.\n", MAX_GENEROS);
-    }
-} while (f.numGenres < 1 || f.numGenres > MAX_GENEROS);
-
+    printf("Numero de generos (max %d): ", MAX_GENEROS);
+    do {
+        scanf("%d", &f.numGenres); limparBuffer();
+        if (f.numGenres < 1) {
+            printf("Erro: deve haver pelo menos 1 genero. Tente novamente: ");
+        } else if (f.numGenres > MAX_GENEROS) {
+            f.numGenres = MAX_GENEROS;
+        }
+    } while (f.numGenres < 1);
 
     // Seleção de géneros
     for (int i = 0; i < f.numGenres; i++) {
@@ -77,16 +76,15 @@ void adicionarFilme(Filme filmes[], int *totalFilmes) {
     f.director[strcspn(f.director, "\n")] = 0;
 
     // Número de atores
-   do {
-    printf("Numero de atores (1 a %d): ", MAX_ACTORES);
-    scanf("%d", &f.numActors); 
-    limparBuffer();
-
-    if (f.numActors < 1 || f.numActors > MAX_ACTORES) {
-        printf("Erro: o numero de atores deve estar entre 1 e %d.\n", MAX_ACTORES);
-    }
-} while (f.numActors < 1 || f.numActors > MAX_ACTORES);
-
+    printf("Numero de atores (max %d): ", MAX_ACTORES);
+    do {
+        scanf("%d", &f.numActors); limparBuffer();
+        if (f.numActors < 0) {
+            printf("Erro: o numero de atores nao pode ser negativo. Tente novamente: ");
+        } else if (f.numActors > MAX_ACTORES) {
+            f.numActors = MAX_ACTORES;
+        }
+    } while (f.numActors < 0);
 
     // Inserir atores
     for (int i = 0; i < f.numActors; i++) {
@@ -277,7 +275,7 @@ void pesquisarPorAtor(Filme filmes[], int totalFilmes) {
                 printf("%d | %s | %s\n", filmes[i].code, filmes[i].title, filmes[i].actors[j]);
 }
 
-// -----------------------------Parte do Adam----------------------------------------------
+
 // --------------------- consultar pelo code
 
 void consultarFilme(Filme filmes[], int totalFilmes, int code) {
@@ -312,7 +310,8 @@ void consultarFilme(Filme filmes[], int totalFilmes, int code) {
         }
     printf("Filme nao encontrado!\n"); // caso não encontre
 }
-// --------------------- alterar filme existente
+// -----------------------------Parte do Adam----------------------------------------------
+// ---------------------5/- alterar filme existente
 void alterarFIlme(Filme filmes[], int totalFilmes) {
     int code;
     printf("Digite o codigo do filme a alterar: ");
@@ -422,7 +421,7 @@ void alterarFIlme(Filme filmes[], int totalFilmes) {
         }
     }
 }
-// --------------------- eliminar filme existente
+// ---------------------6/- eliminar filme existente
 void eliminarFilme(Filme filmes[], int *totalFilmes, int code){
     printf("\n o filme com codigo %d foi encontrado! \n", code);
     printf("A eliminar o filme com codigo %d...\n", code);
@@ -450,7 +449,7 @@ void eliminarFilme(Filme filmes[], int *totalFilmes, int code){
     printf("Filme com codigo %d nao encontrado!\n", code);
 }
 
-// Eliminar todos os filmes
+//-------------------7/- Eliminar todos os filmes
 void eliminarTodosFilmes(Filme filmes[], int *totalFilmes){
     char op;
     printf("Tem a certeza que deseja eliminar todos os filmes? (s/n): ");
@@ -465,7 +464,7 @@ void eliminarTodosFilmes(Filme filmes[], int *totalFilmes){
         printf("Todos os filmes foram eliminados com sucesso!\n");
     }
 }
-// -----------------Verifica se um filme existe pelo código
+// -------------------8/- Verifica se um filme existe pelo código
 
 // converte string para uppercase
 void toUpper(char *str) {
@@ -556,9 +555,9 @@ int importarFilmesCSV(Filme filmes[], int *totalFilmes) {
     return 1;
 }
 
-// ---------------exportar filmes pro ficheiro cvs
+// -------------------9/- exportar filmes pro ficheiro cvs
 
-int exportarFilmesCSV(Filme filmes[], int *totalFilmes) {
+int exportarFilmesCVS(Filme filmes[], int totalFilmes) {
     FILE *f = fopen("movies_export.csv", "w");
 
     if (!f) {
@@ -571,7 +570,7 @@ int exportarFilmesCSV(Filme filmes[], int *totalFilmes) {
         "code,title,genres,description,director,actors,year,duration,rating,favorite,revenue\n"
     );
 
-    for (int i = 0; i < *totalFilmes; i++) {
+    for (int i = 0; i < totalFilmes; i++) {
         Filme fm = filmes[i];
 
         // ---- escrever géneros
